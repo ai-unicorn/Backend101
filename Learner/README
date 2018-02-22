@@ -1,0 +1,17 @@
+- Setup the environment
+  1. install homebrew
+     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  2. install related packages
+     $brew install boost
+     $brew install libevent
+     $brew install automake
+     $brew install thrift
+
+  3. download the thrift source code
+     $cd lib/py
+     $sudo python setup.py install
+
+- To add a new endpoint
+  1. Edit learner.thrift
+  2. $thrift --gen py if/learner.thrift
+  3. Implement the new endpoint in LearnerHandler class
