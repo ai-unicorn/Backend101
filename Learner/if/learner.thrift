@@ -1,5 +1,3 @@
-// include "fb303.thrift"
-
 namespace cpp learner
 namespace java learner
 namespace py learner
@@ -14,7 +12,7 @@ exception LearnerException {
   2: string message,
 }
 
-service LearnerService { // extends fb303.FacebookService {
+service LearnerService {
 
   string hello(
     1: string identity,

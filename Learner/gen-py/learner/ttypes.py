@@ -31,11 +31,13 @@ class LearnErrorCode(object):
 class LearnerException(TException):
     """
     Attributes:
+     - errorCode
      - message
     """
 
 
-    def __init__(self, message=None,):
+    def __init__(self, errorCode=None, message=None,):
+        self.errorCode = errorCode
         self.message = message
 
     def read(self, iprot):
@@ -47,7 +49,12 @@ class LearnerException(TException):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 2:
+            if fid == 1:
+                if ftype == TType.I32:
+                    self.errorCode = iprot.readI32()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
                 if ftype == TType.STRING:
                     self.message = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
@@ -62,6 +69,10 @@ class LearnerException(TException):
             oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
             return
         oprot.writeStructBegin('LearnerException')
+        if self.errorCode is not None:
+            oprot.writeFieldBegin('errorCode', TType.I32, 1)
+            oprot.writeI32(self.errorCode)
+            oprot.writeFieldEnd()
         if self.message is not None:
             oprot.writeFieldBegin('message', TType.STRING, 2)
             oprot.writeString(self.message.encode('utf-8') if sys.version_info[0] == 2 else self.message)
@@ -88,7 +99,7 @@ class LearnerException(TException):
 all_structs.append(LearnerException)
 LearnerException.thrift_spec = (
     None,  # 0
-    None,  # 1
+    (1, TType.I32, 'errorCode', None, None, ),  # 1
     (2, TType.STRING, 'message', 'UTF8', None, ),  # 2
 )
 fix_spec(all_structs)

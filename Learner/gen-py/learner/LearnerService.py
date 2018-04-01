@@ -63,6 +63,8 @@ class Client(Iface):
         iprot.readMessageEnd()
         if result.success is not None:
             return result.success
+        if result.e is not None:
+            raise result.e
         raise TApplicationException(TApplicationException.MISSING_RESULT, "hello failed: unknown result")
 
 
@@ -97,6 +99,9 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
+        except LearnerException as e:
+            msg_type = TMessageType.REPLY
+            result.e = e
         except TApplicationException as ex:
             logging.exception('TApplication exception in handler')
             msg_type = TMessageType.EXCEPTION
@@ -178,11 +183,13 @@ class hello_result(object):
     """
     Attributes:
      - success
+     - e
     """
 
 
-    def __init__(self, success=None,):
+    def __init__(self, success=None, e=None,):
         self.success = success
+        self.e = e
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -198,6 +205,12 @@ class hello_result(object):
                     self.success = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
+            elif fid == 1:
+                if ftype == TType.STRUCT:
+                    self.e = LearnerException()
+                    self.e.read(iprot)
+                else:
+                    iprot.skip(ftype)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -211,6 +224,10 @@ class hello_result(object):
         if self.success is not None:
             oprot.writeFieldBegin('success', TType.STRING, 0)
             oprot.writeString(self.success.encode('utf-8') if sys.version_info[0] == 2 else self.success)
+            oprot.writeFieldEnd()
+        if self.e is not None:
+            oprot.writeFieldBegin('e', TType.STRUCT, 1)
+            self.e.write(oprot)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -231,6 +248,7 @@ class hello_result(object):
 all_structs.append(hello_result)
 hello_result.thrift_spec = (
     (0, TType.STRING, 'success', 'UTF8', None, ),  # 0
+    (1, TType.STRUCT, 'e', [LearnerException, None], None, ),  # 1
 )
 fix_spec(all_structs)
 del all_structs
