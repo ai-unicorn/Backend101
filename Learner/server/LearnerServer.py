@@ -8,9 +8,13 @@ from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 from thrift.server import TServer
 
+from argparse import ArgumentParser
+
 from learner import LearnerService
 
-from argparse import ArgumentParser
+from sklearn.linear_model import LogisticRegression
+
+import numpy as np
 
 
 class LearnerHandler(LearnerService.Iface):
@@ -22,6 +26,41 @@ class LearnerHandler(LearnerService.Iface):
     def hello(self, identity):
         print(identity)
         return identity
+
+    def logisticRegression(
+        self, xTrain, yTrain, penalty, dual, tol, C, fitIntercept,
+        interceptScaling, classWeight, randomState, solver, maxIter, multiClass,
+        verbose, warmStart, nJobs
+    ):
+        if len(classWeight) == 0:
+            classWeight = 'balanced'
+
+        if randomState is not None:
+          if len(randomState) == 0:
+              randomState = None
+          if len(randomState) == 1:
+             randomState = randomState[0]
+          if len(randomState) > 1:
+             # https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.RandomState.html
+             randomeState = np.random.RandomState(randomState)
+
+        if not solver in ["newton-cg", "lbfgs", "liblinear", "sag", "saga"]:
+            ex = LearnerException()
+            ex.errorCode = LearnErrorCode.RUNTIME_ERROR
+            ex.message = "wrong solver!"
+            raise ex
+        if not multiClass in ["ovr", "multinomial"]:
+            ex = LearnerException()
+            ex.errorCode = LearnErrorCode.RUNTIME_ERROR
+            ex.message = "wrong multi_class!"
+            raise ex
+        logistic = LogisticRegression(penalty, dual, tol, C, fitIntercept,
+                                      interceptScaling, classWeight,
+                                      randomState, solver, maxIter, multiClass,
+                                      verbose, warmStart, nJobs)
+        # TODO: return something for the function
+        logistic.fit(xTrain, yTrain)
+
 
 
 def parse_args():
