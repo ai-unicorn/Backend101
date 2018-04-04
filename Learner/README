@@ -31,3 +31,15 @@
   3. brew install gcc (for gfortran)
   4. sudo easy_install --upgrade SciPy
   5. sudo easy_install scikit-learn
+
+
+
+
+
+
+
+
+- git
+  stage all the changes: git add .
+  commit all the changes: git commit
+  commit to remote: git push origin
