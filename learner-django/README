@@ -1,0 +1,31 @@
+- Install homebrew
+  1. /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+- Install python3 via homebrew
+  1. brew install python
+
+- Upgrade pip, setuptools and wheel
+  1. pip3 install --upgrade pip setuptools wheel
+
+- Install Django
+  1. sudo pip3 install virtualenv
+  2. sudo pip3 install virtualenvwrapper
+  3. sudo pip3 install Django
+
+- Verify Django
+  $ python3
+  >>> import django
+  >>> print(django.get_version())
+  2.0.4
+
+- Install scikit
+  1. sudo pip3 install nose
+  2. sudo pip3 install tornado
+  3. sudo pip3 install SciPy --upgrade
+  4. sudo pip3 install numpy
+  5. sudo pip3 install -U scikit-learn
+
+- Verify scikit
+  $ python3
+  >>> from sklearn import datasets, neighbors, linear_model
+  U shouldn't see any exceptions
