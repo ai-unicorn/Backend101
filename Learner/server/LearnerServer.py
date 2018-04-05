@@ -11,6 +11,7 @@ from thrift.server import TServer
 from argparse import ArgumentParser
 
 from learner import LearnerService
+from learner.ttypes import *
 
 from sklearn.linear_model import LogisticRegression
 
@@ -29,8 +30,8 @@ class LearnerHandler(LearnerService.Iface):
 
     def logisticRegression(
         self, xTrain, yTrain, penalty, dual, tol, C, fitIntercept,
-        interceptScaling, classWeight, randomState, solver, maxIter, multiClass,
-        verbose, warmStart, nJobs
+        interceptScaling, classWeight, randomState, solver, maxIter,
+        multiClass, verbose, warmStart, nJobs,
     ):
         if len(classWeight) == 0:
             classWeight = 'balanced'
@@ -38,9 +39,9 @@ class LearnerHandler(LearnerService.Iface):
         if randomState is not None:
           if len(randomState) == 0:
               randomState = None
-          if len(randomState) == 1:
+          elif len(randomState) == 1:
              randomState = randomState[0]
-          if len(randomState) > 1:
+          elif len(randomState) > 1:
              # https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.RandomState.html
              randomeState = np.random.RandomState(randomState)
 
@@ -58,8 +59,10 @@ class LearnerHandler(LearnerService.Iface):
                                       interceptScaling, classWeight,
                                       randomState, solver, maxIter, multiClass,
                                       verbose, warmStart, nJobs)
-        # TODO: return something for the function
         logistic.fit(xTrain, yTrain)
+        attributes = LogisticRegressionAttributes(
+            logistic.coef_, logistic.intercept_, logistic.n_iter_)
+        return attributes
 
 
 

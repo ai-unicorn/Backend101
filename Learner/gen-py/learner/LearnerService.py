@@ -424,25 +424,25 @@ class logisticRegression_args(object):
             if fid == 1:
                 if ftype == TType.LIST:
                     self.xTrain = []
-                    (_etype3, _size0) = iprot.readListBegin()
-                    for _i4 in range(_size0):
-                        _elem5 = []
-                        (_etype9, _size6) = iprot.readListBegin()
-                        for _i10 in range(_size6):
-                            _elem11 = iprot.readDouble()
-                            _elem5.append(_elem11)
+                    (_etype31, _size28) = iprot.readListBegin()
+                    for _i32 in range(_size28):
+                        _elem33 = []
+                        (_etype37, _size34) = iprot.readListBegin()
+                        for _i38 in range(_size34):
+                            _elem39 = iprot.readDouble()
+                            _elem33.append(_elem39)
                         iprot.readListEnd()
-                        self.xTrain.append(_elem5)
+                        self.xTrain.append(_elem33)
                     iprot.readListEnd()
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.LIST:
                     self.yTrain = []
-                    (_etype15, _size12) = iprot.readListBegin()
-                    for _i16 in range(_size12):
-                        _elem17 = iprot.readDouble()
-                        self.yTrain.append(_elem17)
+                    (_etype43, _size40) = iprot.readListBegin()
+                    for _i44 in range(_size40):
+                        _elem45 = iprot.readDouble()
+                        self.yTrain.append(_elem45)
                     iprot.readListEnd()
                 else:
                     iprot.skip(ftype)
@@ -479,21 +479,21 @@ class logisticRegression_args(object):
             elif fid == 9:
                 if ftype == TType.MAP:
                     self.classWeight = {}
-                    (_ktype19, _vtype20, _size18) = iprot.readMapBegin()
-                    for _i22 in range(_size18):
-                        _key23 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                        _val24 = iprot.readDouble()
-                        self.classWeight[_key23] = _val24
+                    (_ktype47, _vtype48, _size46) = iprot.readMapBegin()
+                    for _i50 in range(_size46):
+                        _key51 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        _val52 = iprot.readDouble()
+                        self.classWeight[_key51] = _val52
                     iprot.readMapEnd()
                 else:
                     iprot.skip(ftype)
             elif fid == 10:
                 if ftype == TType.LIST:
                     self.randomState = []
-                    (_etype28, _size25) = iprot.readListBegin()
-                    for _i29 in range(_size25):
-                        _elem30 = iprot.readI32()
-                        self.randomState.append(_elem30)
+                    (_etype56, _size53) = iprot.readListBegin()
+                    for _i57 in range(_size53):
+                        _elem58 = iprot.readI32()
+                        self.randomState.append(_elem58)
                     iprot.readListEnd()
                 else:
                     iprot.skip(ftype)
@@ -540,18 +540,18 @@ class logisticRegression_args(object):
         if self.xTrain is not None:
             oprot.writeFieldBegin('xTrain', TType.LIST, 1)
             oprot.writeListBegin(TType.LIST, len(self.xTrain))
-            for iter31 in self.xTrain:
-                oprot.writeListBegin(TType.DOUBLE, len(iter31))
-                for iter32 in iter31:
-                    oprot.writeDouble(iter32)
+            for iter59 in self.xTrain:
+                oprot.writeListBegin(TType.DOUBLE, len(iter59))
+                for iter60 in iter59:
+                    oprot.writeDouble(iter60)
                 oprot.writeListEnd()
             oprot.writeListEnd()
             oprot.writeFieldEnd()
         if self.yTrain is not None:
             oprot.writeFieldBegin('yTrain', TType.LIST, 2)
             oprot.writeListBegin(TType.DOUBLE, len(self.yTrain))
-            for iter33 in self.yTrain:
-                oprot.writeDouble(iter33)
+            for iter61 in self.yTrain:
+                oprot.writeDouble(iter61)
             oprot.writeListEnd()
             oprot.writeFieldEnd()
         if self.penalty is not None:
@@ -581,16 +581,16 @@ class logisticRegression_args(object):
         if self.classWeight is not None:
             oprot.writeFieldBegin('classWeight', TType.MAP, 9)
             oprot.writeMapBegin(TType.STRING, TType.DOUBLE, len(self.classWeight))
-            for kiter34, viter35 in self.classWeight.items():
-                oprot.writeString(kiter34.encode('utf-8') if sys.version_info[0] == 2 else kiter34)
-                oprot.writeDouble(viter35)
+            for kiter62, viter63 in self.classWeight.items():
+                oprot.writeString(kiter62.encode('utf-8') if sys.version_info[0] == 2 else kiter62)
+                oprot.writeDouble(viter63)
             oprot.writeMapEnd()
             oprot.writeFieldEnd()
         if self.randomState is not None:
             oprot.writeFieldBegin('randomState', TType.LIST, 10)
             oprot.writeListBegin(TType.I32, len(self.randomState))
-            for iter36 in self.randomState:
-                oprot.writeI32(iter36)
+            for iter64 in self.randomState:
+                oprot.writeI32(iter64)
             oprot.writeListEnd()
             oprot.writeFieldEnd()
         if self.solver is not None:
@@ -621,6 +621,10 @@ class logisticRegression_args(object):
         oprot.writeStructEnd()
 
     def validate(self):
+        if self.xTrain is None:
+            raise TProtocolException(message='Required field xTrain is unset!')
+        if self.yTrain is None:
+            raise TProtocolException(message='Required field yTrain is unset!')
         return
 
     def __repr__(self):
@@ -679,13 +683,9 @@ class logisticRegression_result(object):
             if ftype == TType.STOP:
                 break
             if fid == 0:
-                if ftype == TType.LIST:
-                    self.success = []
-                    (_etype40, _size37) = iprot.readListBegin()
-                    for _i41 in range(_size37):
-                        _elem42 = iprot.readDouble()
-                        self.success.append(_elem42)
-                    iprot.readListEnd()
+                if ftype == TType.STRUCT:
+                    self.success = LogisticRegressionAttributes()
+                    self.success.read(iprot)
                 else:
                     iprot.skip(ftype)
             elif fid == 1:
@@ -705,11 +705,8 @@ class logisticRegression_result(object):
             return
         oprot.writeStructBegin('logisticRegression_result')
         if self.success is not None:
-            oprot.writeFieldBegin('success', TType.LIST, 0)
-            oprot.writeListBegin(TType.DOUBLE, len(self.success))
-            for iter43 in self.success:
-                oprot.writeDouble(iter43)
-            oprot.writeListEnd()
+            oprot.writeFieldBegin('success', TType.STRUCT, 0)
+            self.success.write(oprot)
             oprot.writeFieldEnd()
         if self.e is not None:
             oprot.writeFieldBegin('e', TType.STRUCT, 1)
@@ -733,7 +730,7 @@ class logisticRegression_result(object):
         return not (self == other)
 all_structs.append(logisticRegression_result)
 logisticRegression_result.thrift_spec = (
-    (0, TType.LIST, 'success', (TType.DOUBLE, None, False), None, ),  # 0
+    (0, TType.STRUCT, 'success', [LogisticRegressionAttributes, None], None, ),  # 0
     (1, TType.STRUCT, 'e', [LearnerException, None], None, ),  # 1
 )
 fix_spec(all_structs)
