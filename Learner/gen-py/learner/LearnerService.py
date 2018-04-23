@@ -48,6 +48,30 @@ class Iface(object):
         """
         pass
 
+    def decisionTreeClassifier(self, xTrain, yTrain, sample_weight, check_input, x_idx_sorted, criterion, splitter, max_depth, min_samples_split, min_samples_leaf, min_weight_fraction_leaf, max_features, randomState, max_leaf_nodes, min_impurity_decrease, min_impurity_split, class_weight, presort):
+        """
+        Parameters:
+         - xTrain
+         - yTrain
+         - sample_weight
+         - check_input
+         - x_idx_sorted
+         - criterion
+         - splitter
+         - max_depth
+         - min_samples_split
+         - min_samples_leaf
+         - min_weight_fraction_leaf
+         - max_features
+         - randomState
+         - max_leaf_nodes
+         - min_impurity_decrease
+         - min_impurity_split
+         - class_weight
+         - presort
+        """
+        pass
+
 
 class Client(Iface):
     def __init__(self, iprot, oprot=None):
@@ -152,6 +176,73 @@ class Client(Iface):
             raise result.e
         raise TApplicationException(TApplicationException.MISSING_RESULT, "logisticRegression failed: unknown result")
 
+    def decisionTreeClassifier(self, xTrain, yTrain, sample_weight, check_input, x_idx_sorted, criterion, splitter, max_depth, min_samples_split, min_samples_leaf, min_weight_fraction_leaf, max_features, randomState, max_leaf_nodes, min_impurity_decrease, min_impurity_split, class_weight, presort):
+        """
+        Parameters:
+         - xTrain
+         - yTrain
+         - sample_weight
+         - check_input
+         - x_idx_sorted
+         - criterion
+         - splitter
+         - max_depth
+         - min_samples_split
+         - min_samples_leaf
+         - min_weight_fraction_leaf
+         - max_features
+         - randomState
+         - max_leaf_nodes
+         - min_impurity_decrease
+         - min_impurity_split
+         - class_weight
+         - presort
+        """
+        self.send_decisionTreeClassifier(xTrain, yTrain, sample_weight, check_input, x_idx_sorted, criterion, splitter, max_depth, min_samples_split, min_samples_leaf, min_weight_fraction_leaf, max_features, randomState, max_leaf_nodes, min_impurity_decrease, min_impurity_split, class_weight, presort)
+        return self.recv_decisionTreeClassifier()
+
+    def send_decisionTreeClassifier(self, xTrain, yTrain, sample_weight, check_input, x_idx_sorted, criterion, splitter, max_depth, min_samples_split, min_samples_leaf, min_weight_fraction_leaf, max_features, randomState, max_leaf_nodes, min_impurity_decrease, min_impurity_split, class_weight, presort):
+        self._oprot.writeMessageBegin('decisionTreeClassifier', TMessageType.CALL, self._seqid)
+        args = decisionTreeClassifier_args()
+        args.xTrain = xTrain
+        args.yTrain = yTrain
+        args.sample_weight = sample_weight
+        args.check_input = check_input
+        args.x_idx_sorted = x_idx_sorted
+        args.criterion = criterion
+        args.splitter = splitter
+        args.max_depth = max_depth
+        args.min_samples_split = min_samples_split
+        args.min_samples_leaf = min_samples_leaf
+        args.min_weight_fraction_leaf = min_weight_fraction_leaf
+        args.max_features = max_features
+        args.randomState = randomState
+        args.max_leaf_nodes = max_leaf_nodes
+        args.min_impurity_decrease = min_impurity_decrease
+        args.min_impurity_split = min_impurity_split
+        args.class_weight = class_weight
+        args.presort = presort
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_decisionTreeClassifier(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = decisionTreeClassifier_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        if result.success is not None:
+            return result.success
+        if result.e is not None:
+            raise result.e
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "decisionTreeClassifier failed: unknown result")
+
 
 class Processor(Iface, TProcessor):
     def __init__(self, handler):
@@ -159,6 +250,7 @@ class Processor(Iface, TProcessor):
         self._processMap = {}
         self._processMap["hello"] = Processor.process_hello
         self._processMap["logisticRegression"] = Processor.process_logisticRegression
+        self._processMap["decisionTreeClassifier"] = Processor.process_decisionTreeClassifier
 
     def process(self, iprot, oprot):
         (name, type, seqid) = iprot.readMessageBegin()
@@ -223,6 +315,32 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.EXCEPTION
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
         oprot.writeMessageBegin("logisticRegression", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_decisionTreeClassifier(self, seqid, iprot, oprot):
+        args = decisionTreeClassifier_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = decisionTreeClassifier_result()
+        try:
+            result.success = self._handler.decisionTreeClassifier(args.xTrain, args.yTrain, args.sample_weight, args.check_input, args.x_idx_sorted, args.criterion, args.splitter, args.max_depth, args.min_samples_split, args.min_samples_leaf, args.min_weight_fraction_leaf, args.max_features, args.randomState, args.max_leaf_nodes, args.min_impurity_decrease, args.min_impurity_split, args.class_weight, args.presort)
+            msg_type = TMessageType.REPLY
+        except TTransport.TTransportException:
+            raise
+        except LearnerException as e:
+            msg_type = TMessageType.REPLY
+            result.e = e
+        except TApplicationException as ex:
+            logging.exception('TApplication exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = ex
+        except Exception:
+            logging.exception('Unexpected exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("decisionTreeClassifier", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -424,25 +542,25 @@ class logisticRegression_args(object):
             if fid == 1:
                 if ftype == TType.LIST:
                     self.xTrain = []
-                    (_etype31, _size28) = iprot.readListBegin()
-                    for _i32 in range(_size28):
-                        _elem33 = []
-                        (_etype37, _size34) = iprot.readListBegin()
-                        for _i38 in range(_size34):
-                            _elem39 = iprot.readDouble()
-                            _elem33.append(_elem39)
+                    (_etype59, _size56) = iprot.readListBegin()
+                    for _i60 in range(_size56):
+                        _elem61 = []
+                        (_etype65, _size62) = iprot.readListBegin()
+                        for _i66 in range(_size62):
+                            _elem67 = iprot.readDouble()
+                            _elem61.append(_elem67)
                         iprot.readListEnd()
-                        self.xTrain.append(_elem33)
+                        self.xTrain.append(_elem61)
                     iprot.readListEnd()
                 else:
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.LIST:
                     self.yTrain = []
-                    (_etype43, _size40) = iprot.readListBegin()
-                    for _i44 in range(_size40):
-                        _elem45 = iprot.readDouble()
-                        self.yTrain.append(_elem45)
+                    (_etype71, _size68) = iprot.readListBegin()
+                    for _i72 in range(_size68):
+                        _elem73 = iprot.readDouble()
+                        self.yTrain.append(_elem73)
                     iprot.readListEnd()
                 else:
                     iprot.skip(ftype)
@@ -479,21 +597,21 @@ class logisticRegression_args(object):
             elif fid == 9:
                 if ftype == TType.MAP:
                     self.classWeight = {}
-                    (_ktype47, _vtype48, _size46) = iprot.readMapBegin()
-                    for _i50 in range(_size46):
-                        _key51 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                        _val52 = iprot.readDouble()
-                        self.classWeight[_key51] = _val52
+                    (_ktype75, _vtype76, _size74) = iprot.readMapBegin()
+                    for _i78 in range(_size74):
+                        _key79 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        _val80 = iprot.readDouble()
+                        self.classWeight[_key79] = _val80
                     iprot.readMapEnd()
                 else:
                     iprot.skip(ftype)
             elif fid == 10:
                 if ftype == TType.LIST:
                     self.randomState = []
-                    (_etype56, _size53) = iprot.readListBegin()
-                    for _i57 in range(_size53):
-                        _elem58 = iprot.readI32()
-                        self.randomState.append(_elem58)
+                    (_etype84, _size81) = iprot.readListBegin()
+                    for _i85 in range(_size81):
+                        _elem86 = iprot.readI32()
+                        self.randomState.append(_elem86)
                     iprot.readListEnd()
                 else:
                     iprot.skip(ftype)
@@ -540,18 +658,18 @@ class logisticRegression_args(object):
         if self.xTrain is not None:
             oprot.writeFieldBegin('xTrain', TType.LIST, 1)
             oprot.writeListBegin(TType.LIST, len(self.xTrain))
-            for iter59 in self.xTrain:
-                oprot.writeListBegin(TType.DOUBLE, len(iter59))
-                for iter60 in iter59:
-                    oprot.writeDouble(iter60)
+            for iter87 in self.xTrain:
+                oprot.writeListBegin(TType.DOUBLE, len(iter87))
+                for iter88 in iter87:
+                    oprot.writeDouble(iter88)
                 oprot.writeListEnd()
             oprot.writeListEnd()
             oprot.writeFieldEnd()
         if self.yTrain is not None:
             oprot.writeFieldBegin('yTrain', TType.LIST, 2)
             oprot.writeListBegin(TType.DOUBLE, len(self.yTrain))
-            for iter61 in self.yTrain:
-                oprot.writeDouble(iter61)
+            for iter89 in self.yTrain:
+                oprot.writeDouble(iter89)
             oprot.writeListEnd()
             oprot.writeFieldEnd()
         if self.penalty is not None:
@@ -581,16 +699,16 @@ class logisticRegression_args(object):
         if self.classWeight is not None:
             oprot.writeFieldBegin('classWeight', TType.MAP, 9)
             oprot.writeMapBegin(TType.STRING, TType.DOUBLE, len(self.classWeight))
-            for kiter62, viter63 in self.classWeight.items():
-                oprot.writeString(kiter62.encode('utf-8') if sys.version_info[0] == 2 else kiter62)
-                oprot.writeDouble(viter63)
+            for kiter90, viter91 in self.classWeight.items():
+                oprot.writeString(kiter90.encode('utf-8') if sys.version_info[0] == 2 else kiter90)
+                oprot.writeDouble(viter91)
             oprot.writeMapEnd()
             oprot.writeFieldEnd()
         if self.randomState is not None:
             oprot.writeFieldBegin('randomState', TType.LIST, 10)
             oprot.writeListBegin(TType.I32, len(self.randomState))
-            for iter64 in self.randomState:
-                oprot.writeI32(iter64)
+            for iter92 in self.randomState:
+                oprot.writeI32(iter92)
             oprot.writeListEnd()
             oprot.writeFieldEnd()
         if self.solver is not None:
@@ -731,6 +849,415 @@ class logisticRegression_result(object):
 all_structs.append(logisticRegression_result)
 logisticRegression_result.thrift_spec = (
     (0, TType.STRUCT, 'success', [LogisticRegressionAttributes, None], None, ),  # 0
+    (1, TType.STRUCT, 'e', [LearnerException, None], None, ),  # 1
+)
+
+
+class decisionTreeClassifier_args(object):
+    """
+    Attributes:
+     - xTrain
+     - yTrain
+     - sample_weight
+     - check_input
+     - x_idx_sorted
+     - criterion
+     - splitter
+     - max_depth
+     - min_samples_split
+     - min_samples_leaf
+     - min_weight_fraction_leaf
+     - max_features
+     - randomState
+     - max_leaf_nodes
+     - min_impurity_decrease
+     - min_impurity_split
+     - class_weight
+     - presort
+    """
+
+
+    def __init__(self, xTrain=None, yTrain=None, sample_weight=None, check_input=None, x_idx_sorted=None, criterion=None, splitter=None, max_depth=None, min_samples_split=None, min_samples_leaf=None, min_weight_fraction_leaf=None, max_features=None, randomState=None, max_leaf_nodes=None, min_impurity_decrease=None, min_impurity_split=None, class_weight=None, presort=None,):
+        self.xTrain = xTrain
+        self.yTrain = yTrain
+        self.sample_weight = sample_weight
+        self.check_input = check_input
+        self.x_idx_sorted = x_idx_sorted
+        self.criterion = criterion
+        self.splitter = splitter
+        self.max_depth = max_depth
+        self.min_samples_split = min_samples_split
+        self.min_samples_leaf = min_samples_leaf
+        self.min_weight_fraction_leaf = min_weight_fraction_leaf
+        self.max_features = max_features
+        self.randomState = randomState
+        self.max_leaf_nodes = max_leaf_nodes
+        self.min_impurity_decrease = min_impurity_decrease
+        self.min_impurity_split = min_impurity_split
+        self.class_weight = class_weight
+        self.presort = presort
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.LIST:
+                    self.xTrain = []
+                    (_etype96, _size93) = iprot.readListBegin()
+                    for _i97 in range(_size93):
+                        _elem98 = []
+                        (_etype102, _size99) = iprot.readListBegin()
+                        for _i103 in range(_size99):
+                            _elem104 = iprot.readDouble()
+                            _elem98.append(_elem104)
+                        iprot.readListEnd()
+                        self.xTrain.append(_elem98)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.LIST:
+                    self.yTrain = []
+                    (_etype108, _size105) = iprot.readListBegin()
+                    for _i109 in range(_size105):
+                        _elem110 = iprot.readDouble()
+                        self.yTrain.append(_elem110)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.LIST:
+                    self.sample_weight = []
+                    (_etype114, _size111) = iprot.readListBegin()
+                    for _i115 in range(_size111):
+                        _elem116 = iprot.readDouble()
+                        self.sample_weight.append(_elem116)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 4:
+                if ftype == TType.BOOL:
+                    self.check_input = iprot.readBool()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 5:
+                if ftype == TType.LIST:
+                    self.x_idx_sorted = []
+                    (_etype120, _size117) = iprot.readListBegin()
+                    for _i121 in range(_size117):
+                        _elem122 = iprot.readDouble()
+                        self.x_idx_sorted.append(_elem122)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 6:
+                if ftype == TType.STRING:
+                    self.criterion = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 7:
+                if ftype == TType.STRING:
+                    self.splitter = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 8:
+                if ftype == TType.STRING:
+                    self.max_depth = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 9:
+                if ftype == TType.STRING:
+                    self.min_samples_split = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 10:
+                if ftype == TType.STRING:
+                    self.min_samples_leaf = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 11:
+                if ftype == TType.DOUBLE:
+                    self.min_weight_fraction_leaf = iprot.readDouble()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 12:
+                if ftype == TType.STRING:
+                    self.max_features = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 13:
+                if ftype == TType.LIST:
+                    self.randomState = []
+                    (_etype126, _size123) = iprot.readListBegin()
+                    for _i127 in range(_size123):
+                        _elem128 = iprot.readI32()
+                        self.randomState.append(_elem128)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 14:
+                if ftype == TType.STRING:
+                    self.max_leaf_nodes = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 15:
+                if ftype == TType.DOUBLE:
+                    self.min_impurity_decrease = iprot.readDouble()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 16:
+                if ftype == TType.DOUBLE:
+                    self.min_impurity_split = iprot.readDouble()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 17:
+                if ftype == TType.LIST:
+                    self.class_weight = []
+                    (_etype132, _size129) = iprot.readListBegin()
+                    for _i133 in range(_size129):
+                        _elem134 = {}
+                        (_ktype136, _vtype137, _size135) = iprot.readMapBegin()
+                        for _i139 in range(_size135):
+                            _key140 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                            _val141 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                            _elem134[_key140] = _val141
+                        iprot.readMapEnd()
+                        self.class_weight.append(_elem134)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 18:
+                if ftype == TType.BOOL:
+                    self.presort = iprot.readBool()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('decisionTreeClassifier_args')
+        if self.xTrain is not None:
+            oprot.writeFieldBegin('xTrain', TType.LIST, 1)
+            oprot.writeListBegin(TType.LIST, len(self.xTrain))
+            for iter142 in self.xTrain:
+                oprot.writeListBegin(TType.DOUBLE, len(iter142))
+                for iter143 in iter142:
+                    oprot.writeDouble(iter143)
+                oprot.writeListEnd()
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        if self.yTrain is not None:
+            oprot.writeFieldBegin('yTrain', TType.LIST, 2)
+            oprot.writeListBegin(TType.DOUBLE, len(self.yTrain))
+            for iter144 in self.yTrain:
+                oprot.writeDouble(iter144)
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        if self.sample_weight is not None:
+            oprot.writeFieldBegin('sample_weight', TType.LIST, 3)
+            oprot.writeListBegin(TType.DOUBLE, len(self.sample_weight))
+            for iter145 in self.sample_weight:
+                oprot.writeDouble(iter145)
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        if self.check_input is not None:
+            oprot.writeFieldBegin('check_input', TType.BOOL, 4)
+            oprot.writeBool(self.check_input)
+            oprot.writeFieldEnd()
+        if self.x_idx_sorted is not None:
+            oprot.writeFieldBegin('x_idx_sorted', TType.LIST, 5)
+            oprot.writeListBegin(TType.DOUBLE, len(self.x_idx_sorted))
+            for iter146 in self.x_idx_sorted:
+                oprot.writeDouble(iter146)
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        if self.criterion is not None:
+            oprot.writeFieldBegin('criterion', TType.STRING, 6)
+            oprot.writeString(self.criterion.encode('utf-8') if sys.version_info[0] == 2 else self.criterion)
+            oprot.writeFieldEnd()
+        if self.splitter is not None:
+            oprot.writeFieldBegin('splitter', TType.STRING, 7)
+            oprot.writeString(self.splitter.encode('utf-8') if sys.version_info[0] == 2 else self.splitter)
+            oprot.writeFieldEnd()
+        if self.max_depth is not None:
+            oprot.writeFieldBegin('max_depth', TType.STRING, 8)
+            oprot.writeString(self.max_depth.encode('utf-8') if sys.version_info[0] == 2 else self.max_depth)
+            oprot.writeFieldEnd()
+        if self.min_samples_split is not None:
+            oprot.writeFieldBegin('min_samples_split', TType.STRING, 9)
+            oprot.writeString(self.min_samples_split.encode('utf-8') if sys.version_info[0] == 2 else self.min_samples_split)
+            oprot.writeFieldEnd()
+        if self.min_samples_leaf is not None:
+            oprot.writeFieldBegin('min_samples_leaf', TType.STRING, 10)
+            oprot.writeString(self.min_samples_leaf.encode('utf-8') if sys.version_info[0] == 2 else self.min_samples_leaf)
+            oprot.writeFieldEnd()
+        if self.min_weight_fraction_leaf is not None:
+            oprot.writeFieldBegin('min_weight_fraction_leaf', TType.DOUBLE, 11)
+            oprot.writeDouble(self.min_weight_fraction_leaf)
+            oprot.writeFieldEnd()
+        if self.max_features is not None:
+            oprot.writeFieldBegin('max_features', TType.STRING, 12)
+            oprot.writeString(self.max_features.encode('utf-8') if sys.version_info[0] == 2 else self.max_features)
+            oprot.writeFieldEnd()
+        if self.randomState is not None:
+            oprot.writeFieldBegin('randomState', TType.LIST, 13)
+            oprot.writeListBegin(TType.I32, len(self.randomState))
+            for iter147 in self.randomState:
+                oprot.writeI32(iter147)
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        if self.max_leaf_nodes is not None:
+            oprot.writeFieldBegin('max_leaf_nodes', TType.STRING, 14)
+            oprot.writeString(self.max_leaf_nodes.encode('utf-8') if sys.version_info[0] == 2 else self.max_leaf_nodes)
+            oprot.writeFieldEnd()
+        if self.min_impurity_decrease is not None:
+            oprot.writeFieldBegin('min_impurity_decrease', TType.DOUBLE, 15)
+            oprot.writeDouble(self.min_impurity_decrease)
+            oprot.writeFieldEnd()
+        if self.min_impurity_split is not None:
+            oprot.writeFieldBegin('min_impurity_split', TType.DOUBLE, 16)
+            oprot.writeDouble(self.min_impurity_split)
+            oprot.writeFieldEnd()
+        if self.class_weight is not None:
+            oprot.writeFieldBegin('class_weight', TType.LIST, 17)
+            oprot.writeListBegin(TType.MAP, len(self.class_weight))
+            for iter148 in self.class_weight:
+                oprot.writeMapBegin(TType.STRING, TType.STRING, len(iter148))
+                for kiter149, viter150 in iter148.items():
+                    oprot.writeString(kiter149.encode('utf-8') if sys.version_info[0] == 2 else kiter149)
+                    oprot.writeString(viter150.encode('utf-8') if sys.version_info[0] == 2 else viter150)
+                oprot.writeMapEnd()
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        if self.presort is not None:
+            oprot.writeFieldBegin('presort', TType.BOOL, 18)
+            oprot.writeBool(self.presort)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        if self.xTrain is None:
+            raise TProtocolException(message='Required field xTrain is unset!')
+        if self.yTrain is None:
+            raise TProtocolException(message='Required field yTrain is unset!')
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(decisionTreeClassifier_args)
+decisionTreeClassifier_args.thrift_spec = (
+    None,  # 0
+    (1, TType.LIST, 'xTrain', (TType.LIST, (TType.DOUBLE, None, False), False), None, ),  # 1
+    (2, TType.LIST, 'yTrain', (TType.DOUBLE, None, False), None, ),  # 2
+    (3, TType.LIST, 'sample_weight', (TType.DOUBLE, None, False), None, ),  # 3
+    (4, TType.BOOL, 'check_input', None, None, ),  # 4
+    (5, TType.LIST, 'x_idx_sorted', (TType.DOUBLE, None, False), None, ),  # 5
+    (6, TType.STRING, 'criterion', 'UTF8', None, ),  # 6
+    (7, TType.STRING, 'splitter', 'UTF8', None, ),  # 7
+    (8, TType.STRING, 'max_depth', 'UTF8', None, ),  # 8
+    (9, TType.STRING, 'min_samples_split', 'UTF8', None, ),  # 9
+    (10, TType.STRING, 'min_samples_leaf', 'UTF8', None, ),  # 10
+    (11, TType.DOUBLE, 'min_weight_fraction_leaf', None, None, ),  # 11
+    (12, TType.STRING, 'max_features', 'UTF8', None, ),  # 12
+    (13, TType.LIST, 'randomState', (TType.I32, None, False), None, ),  # 13
+    (14, TType.STRING, 'max_leaf_nodes', 'UTF8', None, ),  # 14
+    (15, TType.DOUBLE, 'min_impurity_decrease', None, None, ),  # 15
+    (16, TType.DOUBLE, 'min_impurity_split', None, None, ),  # 16
+    (17, TType.LIST, 'class_weight', (TType.MAP, (TType.STRING, 'UTF8', TType.STRING, 'UTF8', False), False), None, ),  # 17
+    (18, TType.BOOL, 'presort', None, None, ),  # 18
+)
+
+
+class decisionTreeClassifier_result(object):
+    """
+    Attributes:
+     - success
+     - e
+    """
+
+
+    def __init__(self, success=None, e=None,):
+        self.success = success
+        self.e = e
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 0:
+                if ftype == TType.STRUCT:
+                    self.success = DecisionTreeAttributes()
+                    self.success.read(iprot)
+                else:
+                    iprot.skip(ftype)
+            elif fid == 1:
+                if ftype == TType.STRUCT:
+                    self.e = LearnerException()
+                    self.e.read(iprot)
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('decisionTreeClassifier_result')
+        if self.success is not None:
+            oprot.writeFieldBegin('success', TType.STRUCT, 0)
+            self.success.write(oprot)
+            oprot.writeFieldEnd()
+        if self.e is not None:
+            oprot.writeFieldBegin('e', TType.STRUCT, 1)
+            self.e.write(oprot)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(decisionTreeClassifier_result)
+decisionTreeClassifier_result.thrift_spec = (
+    (0, TType.STRUCT, 'success', [DecisionTreeAttributes, None], None, ),  # 0
     (1, TType.STRUCT, 'e', [LearnerException, None], None, ),  # 1
 )
 fix_spec(all_structs)
